@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
 import { ChevronLeft, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { createTransaction, getTransactions } from '@/lib/storage';
 
 const categories = {
   despesa: [
@@ -33,9 +33,9 @@ export default function AddTransaction() {
   const [success, setSuccess] = useState(false);
 
   const mutation = useMutation({
-    mutationFn: (data) => base44.entities.Transaction.create(data),
+    mutationFn: (data) => createTransaction(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      queryClient.setQueryData(['transactions'], getTransactions());
       setSuccess(true);
       setTimeout(() => navigate('/'), 1500);
     },
@@ -72,7 +72,6 @@ export default function AddTransaction() {
         <h1 className="text-xl font-800">Nova Transação</h1>
       </div>
 
-      {/* Tipo */}
       <div className="flex gap-3 mb-6">
         {['receita', 'despesa'].map((t) => (
           <button
@@ -91,7 +90,6 @@ export default function AddTransaction() {
         ))}
       </div>
 
-      {/* Valor */}
       <div className="mb-6">
         <label className="text-sm font-700 text-muted-foreground mb-2 block">Quanto?</label>
         <div className="relative">
@@ -106,7 +104,6 @@ export default function AddTransaction() {
         </div>
       </div>
 
-      {/* Categoria */}
       <div className="mb-6">
         <label className="text-sm font-700 text-muted-foreground mb-3 block">Categoria</label>
         <div className="grid grid-cols-3 gap-2">
@@ -127,7 +124,6 @@ export default function AddTransaction() {
         </div>
       </div>
 
-      {/* Descrição */}
       <div className="mb-8">
         <label className="text-sm font-700 text-muted-foreground mb-2 block">Descrição (opcional)</label>
         <Input

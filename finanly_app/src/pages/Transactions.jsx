@@ -1,8 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
 import { Trash2 } from 'lucide-react';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { deleteTransaction, getTransactions } from '@/lib/storage';
 
 const categoryEmoji = {
   lanche: '🍔', transporte: '🚌', lazer: '🎮', roupas: '👕',
@@ -15,17 +15,19 @@ export default function Transactions() {
   const queryClient = useQueryClient();
   const { data: transactions = [] } = useQuery({
     queryKey: ['transactions'],
-    queryFn: () => base44.entities.Transaction.list('-date', 100),
+    queryFn: async () => getTransactions(),
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.Transaction.delete(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['transactions'] }),
+    mutationFn: (id) => deleteTransaction(id),
+    onSuccess: () => {
+      queryClient.setQueryData(['transactions'], getTransactions());
+    },
   });
 
   const fmt = (v) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-  const despesas = transactions.filter(t => t.type === 'despesa');
+  const despesas = transactions.filter((t) => t.type === 'despesa');
   const chartData = Object.entries(
     despesas.reduce((acc, t) => {
       acc[t.category] = (acc[t.category] || 0) + t.amount;

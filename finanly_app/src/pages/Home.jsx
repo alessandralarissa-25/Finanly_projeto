@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Wallet, Star } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { getTransactions } from '@/lib/storage';
 
 const categoryEmoji = {
   lanche: '🍔', transporte: '🚌', lazer: '🎮', roupas: '👕',
@@ -13,11 +13,11 @@ const categoryEmoji = {
 export default function Home() {
   const { data: transactions = [] } = useQuery({
     queryKey: ['transactions'],
-    queryFn: () => base44.entities.Transaction.list('-date', 50),
+    queryFn: async () => getTransactions(),
   });
 
-  const receitas = transactions.filter(t => t.type === 'receita').reduce((s, t) => s + t.amount, 0);
-  const despesas = transactions.filter(t => t.type === 'despesa').reduce((s, t) => s + t.amount, 0);
+  const receitas = transactions.filter((t) => t.type === 'receita').reduce((s, t) => s + t.amount, 0);
+  const despesas = transactions.filter((t) => t.type === 'despesa').reduce((s, t) => s + t.amount, 0);
   const saldo = receitas - despesas;
 
   const recent = transactions.slice(0, 5);
@@ -26,7 +26,6 @@ export default function Home() {
 
   return (
     <div className="px-4 pt-6">
-      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
           <p className="text-muted-foreground text-sm font-semibold">Olá, jovem! 👋</p>
@@ -37,7 +36,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Saldo Card */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -70,7 +68,6 @@ export default function Home() {
         </div>
       </motion.div>
 
-      {/* Dica rápida */}
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
@@ -86,7 +83,6 @@ export default function Home() {
         </div>
       </motion.div>
 
-      {/* Últimas transações */}
       <div className="mb-4">
         <h2 className="font-800 text-base mb-3">Últimas movimentações</h2>
         {recent.length === 0 ? (

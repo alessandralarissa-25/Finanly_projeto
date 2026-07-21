@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
 import { Plus, X, Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { createGoal, deleteGoal, getGoals, updateGoal } from '@/lib/storage';
 
 const emojis = ['🎮', '👟', '📱', '🎵', '🚴', '✈️', '📚', '🎨', '🍕', '💻'];
 
@@ -19,22 +19,33 @@ export default function Goals() {
 
   const { data: goals = [] } = useQuery({
     queryKey: ['goals'],
-    queryFn: () => base44.entities.Goal.list('-created_date'),
+    queryFn: async () => getGoals(),
   });
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.Goal.create(data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['goals'] }); setShowForm(false); setTitle(''); setTarget(''); },
+    mutationFn: (data) => createGoal(data),
+    onSuccess: () => {
+      queryClient.setQueryData(['goals'], getGoals());
+      setShowForm(false);
+      setTitle('');
+      setTarget('');
+    },
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Goal.update(id, data),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['goals'] }); setAddingTo(null); setAddAmount(''); },
+    mutationFn: ({ id, data }) => updateGoal(id, data),
+    onSuccess: () => {
+      queryClient.setQueryData(['goals'], getGoals());
+      setAddingTo(null);
+      setAddAmount('');
+    },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.Goal.delete(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['goals'] }),
+    mutationFn: (id) => deleteGoal(id),
+    onSuccess: () => {
+      queryClient.setQueryData(['goals'], getGoals());
+    },
   });
 
   const handleAddMoney = (goal) => {
@@ -43,7 +54,7 @@ export default function Goals() {
     const newSaved = (goal.saved_amount || 0) + val;
     updateMutation.mutate({
       id: goal.id,
-      data: { saved_amount: newSaved, completed: newSaved >= goal.target_amount },
+      data: { saved_amount: newSaved },
     });
   };
 
