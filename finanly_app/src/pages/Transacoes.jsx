@@ -11,7 +11,7 @@ const categoryEmoji = {
 
 const COLORS = ['#7C3AED', '#06B6D4', '#F59E0B', '#EF4444', '#10B981', '#8B5CF6', '#EC4899', '#6B7280'];
 
-export default function Transactions() {
+export default function Transacoes() {
   const queryClient = useQueryClient();
   const { data: transactions = [] } = useQuery({
     queryKey: ['transactions'],

@@ -8,7 +8,7 @@ import { createGoal, deleteGoal, getGoals, updateGoal } from '@/lib/storage';
 
 const emojis = ['🎮', '👟', '📱', '🎵', '🚴', '✈️', '📚', '🎨', '🍕', '💻'];
 
-export default function Goals() {
+export default function Metas() {
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
   const [title, setTitle] = useState('');

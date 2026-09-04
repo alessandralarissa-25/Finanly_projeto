@@ -6,11 +6,19 @@ import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import AppLayout from './components/layout/AppLayout';
-import Home from './pages/Home';
-import AddTransaction from './pages/AddTransaction';
-import Transactions from './pages/Transactions';
-import Goals from './pages/Goals';
-import Tips from './pages/Tips';
+import Inicio from './pages/Inicio';
+import AdicionarTransacao from './pages/AdicionarTransacao';
+import Transacoes from './pages/Transacoes';
+import Metas from './pages/Metas';
+import Dicas from './pages/Dicas';
+
+const ROTAS = {
+  inicio: '/',
+  transacoes: '/transacoes',
+  adicionar: '/adicionar',
+  metas: '/metas',
+  dicas: '/dicas',
+};
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -35,11 +43,11 @@ const AuthenticatedApp = () => {
   return (
     <Routes>
       <Route element={<AppLayout />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/transacoes" element={<Transactions />} />
-        <Route path="/adicionar" element={<AddTransaction />} />
-        <Route path="/metas" element={<Goals />} />
-        <Route path="/dicas" element={<Tips />} />
+        <Route path={ROTAS.inicio} element={<Inicio />} />
+        <Route path={ROTAS.transacoes} element={<Transacoes />} />
+        <Route path={ROTAS.adicionar} element={<AdicionarTransacao />} />
+        <Route path={ROTAS.metas} element={<Metas />} />
+        <Route path={ROTAS.dicas} element={<Dicas />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

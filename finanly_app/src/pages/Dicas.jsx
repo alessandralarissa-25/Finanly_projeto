@@ -59,7 +59,7 @@ const tips = [
   },
 ];
 
-export default function Tips() {
+export default function Dicas() {
   return (
     <div className="px-4 pt-6 pb-8">
       <h1 className="text-2xl font-900 mb-2">Dicas Financeiras 💡</h1>

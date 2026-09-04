@@ -10,7 +10,7 @@ const categoryEmoji = {
   estudos: '📚', mesada: '💵', trabalho: '💼', outros: '📦'
 };
 
-export default function Home() {
+export default function Inicio() {
   const { data: transactions = [] } = useQuery({
     queryKey: ['transactions'],
     queryFn: async () => getTransactions(),

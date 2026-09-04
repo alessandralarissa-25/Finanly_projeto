@@ -23,7 +23,7 @@ const categories = {
   ],
 };
 
-export default function AddTransaction() {
+export default function AdicionarTransacao() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [type, setType] = useState('despesa');
